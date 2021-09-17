@@ -158,13 +158,15 @@ public class MainController {
 			if(a.action == 0){
 				liveCells.remove(c);
 				map.remove(getIdForCell(c.getX(), c.getY()));
+				clearCell(c.getX(), c.getY());
 			}else{
 				liveCells.add(c);
 				map.put(getIdForCell(c.getX(), c.getY()), c);
+				drawCell(c.getX(), c.getY());
 			}
 		}
 		System.out.println("new size " + liveCells.size());
-		drawCells();
+		//drawCells();
 	}
 
 	private int calculateNeighboursCount(int i, int j){
@@ -195,6 +197,12 @@ public class MainController {
 		double y = j * cellSize;// - j * strokeWidth;
 		gc.setFill(Color.BLACK);
 		gc.fillRect(x, y, cellSize, cellSize);
+	}
+
+	private void clearCell(int i, int j){
+		double x = i * cellSize;
+		double y = j * cellSize;
+		gc.clearRect(x, y, cellSize, cellSize);
 	}
 
 	@FXML
