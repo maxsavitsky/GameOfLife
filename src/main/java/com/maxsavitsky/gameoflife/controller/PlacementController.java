@@ -49,7 +49,7 @@ public class PlacementController {
 			int index = -1;
 			for (int k = 0; k < cells.size(); k++) {
 				MainController.LiveCell c = cells.get(k);
-				if (c.getX() == i && c.getY() == j) {
+				if (c.x() == i && c.y() == j) {
 					index = k;
 					break;
 				}

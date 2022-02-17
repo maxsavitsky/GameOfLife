@@ -14,63 +14,20 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Objects;
 import java.util.Timer;
 import java.util.TimerTask;
 
 public class MainController {
 
-	public static class LiveCell {
-		private int x, y;
-
-		public LiveCell(int x, int y) {
-			this.x = x;
-			this.y = y;
-		}
-
-		public int getX() {
-			return x;
-		}
-
-		public int getY() {
-			return y;
-		}
-
-		@Override
-		public boolean equals(Object o) {
-			if (this == o) return true;
-			if (o == null || getClass() != o.getClass()) return false;
-			LiveCell liveCell = (LiveCell) o;
-			return x == liveCell.x && y == liveCell.y;
-		}
-
-		@Override
-		public int hashCode() {
-			return Objects.hash(x, y);
-		}
+	public record LiveCell(int x, int y) {
 	}
 
-	private static class Action{
-		protected final int action;
-		protected final LiveCell cell;
+	public enum ActionType {
+		REMOVE_CELL,
+		ADD_CELL
+	}
 
-		public Action(int action, LiveCell cell) {
-			this.action = action;
-			this.cell = cell;
-		}
-
-		@Override
-		public boolean equals(Object o) {
-			if (this == o) return true;
-			if (o == null || getClass() != o.getClass()) return false;
-			Action action1 = (Action) o;
-			return action == action1.action && Objects.equals(cell, action1.cell);
-		}
-
-		@Override
-		public int hashCode() {
-			return Objects.hash(action, cell);
-		}
+	private record Action(ActionType action, LiveCell cell) {
 	}
 
 	@FXML
@@ -78,28 +35,28 @@ public class MainController {
 	private GraphicsContext gc;
 
 	@FXML
-	private Button placeButton, startButton;
+	private Button placeButton;
 
 	private ArrayList<LiveCell> startCells = new ArrayList<>();
 
-	private int cellsCount = 50;
 	private double cellSize;
-	private final double strokeWidth = 1;
+	private static final int CELLS_COUNT = 50;
+	private static final double STROKE_WIDTH = 1;
 
 	private ArrayList<LiveCell> liveCells = new ArrayList<>();
-	private HashMap<Integer, LiveCell> map = new HashMap<>(cellsCount * cellsCount + cellsCount);
+	private final HashMap<Integer, LiveCell> map = new HashMap<>(CELLS_COUNT * (CELLS_COUNT + 1));
 
 	private Timer timer;
 
 	@FXML
 	public void initialize() {
-		cellSize = (canvas.getWidth()) / cellsCount;
+		cellSize = (canvas.getWidth()) / CELLS_COUNT;
 		gc = canvas.getGraphicsContext2D();
-		gc.setLineWidth(strokeWidth);
+		gc.setLineWidth(STROKE_WIDTH);
 
 		placeButton.setOnMouseClicked(event -> {
 			stop();
-			PlacementController.setCellsCount(cellsCount);
+			PlacementController.setCellsCount(CELLS_COUNT);
 			PlacementController.setCellsSize(cellSize);
 			PlacementController.setPlacementCallback(cells -> {
 				startCells = cells;
@@ -123,94 +80,95 @@ public class MainController {
 	private void init() {
 		liveCells = new ArrayList<>(startCells);
 		map.clear();
-		for(var c : liveCells){
-			map.put(getIdForCell(c.getX(), c.getY()), c);
+		for (var c : liveCells) {
+			map.put(getIdForCell(c.x(), c.y()), c);
 		}
 
 		drawCells();
 	}
 
-	private final int[] dx = {1, 0, -1,  0, 1, -1,  1, -1};
-	private final int[] dy = {0, 1,  0, -1, 1,  1, -1, -1};
+	private final int[] dx = {1, 0, -1, 0, 1, -1, 1, -1};
+	private final int[] dy = {0, 1, 0, -1, 1, 1, -1, -1};
 
-	private void fetch(){
-		System.out.println("old size " + liveCells.size());
-		HashSet<Action> pending = new HashSet<>();
-		for(var c : liveCells){
-			int n = calculateNeighboursCount(c.getX(), c.getY());
-			if(n <= 1 || n >= 4){
-				pending.add(new Action(0, c));
+	private void fetch() {
+		for (var a : getPendingActions()) {
+			var c = a.cell;
+			if (a.action() == ActionType.REMOVE_CELL) {
+				liveCells.remove(c);
+				map.remove(getIdForCell(c.x(), c.y()));
+				clearCell(c.x(), c.y());
+			} else {
+				liveCells.add(c);
+				map.put(getIdForCell(c.x(), c.y()), c);
+				drawCell(c.x(), c.y());
 			}
-			System.out.println("looking neighbours for " + c.getX() + " " + c.getY());
-			for(int i = 0; i < 8; i++){
-				int nx = c.getX() + dx[i], ny = c.getY() + dy[i];
-				if(nx >= 0 && nx < cellsCount && ny >= 0 && ny < cellsCount) {
-					if(!map.containsKey(getIdForCell(nx, ny))){
-						n = calculateNeighboursCount(nx, ny);
-						System.out.println("neighbour " + nx + " " + ny + " " + n);
-						if(n == 3)
-							pending.add(new Action(1, new LiveCell(nx, ny)));
-					}
+		}
+	}
+
+	private HashSet<Action> getPendingActions(){
+		HashSet<Action> pending = new HashSet<>();
+		for (var c : liveCells) {
+			int n = calculateNeighboursCount(c.x(), c.y());
+			if (n <= 1 || n >= 4) {
+				pending.add(new Action(ActionType.REMOVE_CELL, c));
+			}
+			for (int i = 0; i < 8; i++) {
+				int nx = c.x() + dx[i];
+				int ny = c.y() + dy[i];
+				if (nx >= 0 && nx < CELLS_COUNT
+						&& ny >= 0 && ny < CELLS_COUNT
+						&& !map.containsKey(getIdForCell(nx, ny))) {
+					n = calculateNeighboursCount(nx, ny);
+					if (n == 3)
+						pending.add(new Action(ActionType.ADD_CELL, new LiveCell(nx, ny)));
 				}
 			}
 		}
-		for(var a : pending){
-			var c = a.cell;
-			if(a.action == 0){
-				liveCells.remove(c);
-				map.remove(getIdForCell(c.getX(), c.getY()));
-				clearCell(c.getX(), c.getY());
-			}else{
-				liveCells.add(c);
-				map.put(getIdForCell(c.getX(), c.getY()), c);
-				drawCell(c.getX(), c.getY());
-			}
-		}
-		System.out.println("new size " + liveCells.size());
-		//drawCells();
+		return pending;
 	}
 
-	private int calculateNeighboursCount(int i, int j){
+	private int calculateNeighboursCount(int i, int j) {
 		int cnt = 0;
-		for(int k = 0; k < 8; k++){
-			int nx = i + dx[k], ny = j + dy[k];
-			if(nx >= 0 && nx < cellsCount && ny >= 0 && ny < cellsCount){
-				if(map.containsKey(getIdForCell(nx, ny)))
-					cnt++;
+		for (int k = 0; k < 8; k++) {
+			int nx = i + dx[k];
+			int ny = j + dy[k];
+			if (nx >= 0 && nx < CELLS_COUNT
+					&& ny >= 0 && ny < CELLS_COUNT
+					&& map.containsKey(getIdForCell(nx, ny))) {
+				cnt++;
 			}
 		}
 		return cnt;
 	}
 
-	private int getIdForCell(int i, int j){
-		return i * cellsCount + j;
+	private int getIdForCell(int i, int j) {
+		return i * CELLS_COUNT + j;
 	}
 
 	private void drawCells() {
 		gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
 		for (var c : liveCells) {
-			drawCell(c.getX(), c.getY());
+			drawCell(c.x(), c.y());
 		}
 	}
 
 	private void drawCell(int i, int j) {
-		double x = i * cellSize;// - i * strokeWidth;
-		double y = j * cellSize;// - j * strokeWidth;
+		double x = i * cellSize;
+		double y = j * cellSize;
 		gc.setFill(Color.BLACK);
 		gc.fillRect(x, y, cellSize, cellSize);
 	}
 
-	private void clearCell(int i, int j){
+	private void clearCell(int i, int j) {
 		double x = i * cellSize;
 		double y = j * cellSize;
 		gc.clearRect(x, y, cellSize, cellSize);
 	}
 
 	@FXML
-	protected void start(){
+	protected void start() {
 		stop();
 		timer = new Timer();
-		System.out.println("start");
 		timer.schedule(new TimerTask() {
 			@Override
 			public void run() {
@@ -220,15 +178,15 @@ public class MainController {
 	}
 
 	@FXML
-	protected void stop(){
-		if(timer != null){
+	protected void stop() {
+		if (timer != null) {
 			timer.cancel();
 			timer = null;
 		}
 	}
 
 	@FXML
-	protected void reset(){
+	protected void reset() {
 		stop();
 		init();
 	}
