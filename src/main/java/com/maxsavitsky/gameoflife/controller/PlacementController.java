@@ -10,13 +10,8 @@ import java.util.ArrayList;
 
 public class PlacementController {
 
-	private static int cellsCount;
 	private static double cellsSize;
 	private static Callback callback;
-
-	public static void setCellsCount(int cellsCount) {
-		PlacementController.cellsCount = cellsCount;
-	}
 
 	public static void setCellsSize(double cellsSize) {
 		PlacementController.cellsSize = cellsSize;

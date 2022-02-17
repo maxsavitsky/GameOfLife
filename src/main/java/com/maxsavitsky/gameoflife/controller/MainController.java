@@ -1,6 +1,7 @@
 package com.maxsavitsky.gameoflife.controller;
 
 import com.maxsavitsky.gameoflife.Application;
+import com.maxsavitsky.gameoflife.GlobalSettings;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -40,23 +41,20 @@ public class MainController {
 	private ArrayList<LiveCell> startCells = new ArrayList<>();
 
 	private double cellSize;
-	private static final int CELLS_COUNT = 50;
-	private static final double STROKE_WIDTH = 1;
 
 	private ArrayList<LiveCell> liveCells = new ArrayList<>();
-	private final HashMap<Integer, LiveCell> map = new HashMap<>(CELLS_COUNT * (CELLS_COUNT + 1));
+	private final HashMap<Integer, LiveCell> map = new HashMap<>(GlobalSettings.getCellsCount() * (GlobalSettings.getCellsCount() + 1));
 
 	private Timer timer;
 
 	@FXML
 	public void initialize() {
-		cellSize = (canvas.getWidth()) / CELLS_COUNT;
+		cellSize = canvas.getWidth() / GlobalSettings.getCellsCount();
 		gc = canvas.getGraphicsContext2D();
-		gc.setLineWidth(STROKE_WIDTH);
+		gc.setLineWidth(GlobalSettings.getStrokeWidth());
 
 		placeButton.setOnMouseClicked(event -> {
 			stop();
-			PlacementController.setCellsCount(CELLS_COUNT);
 			PlacementController.setCellsSize(cellSize);
 			PlacementController.setPlacementCallback(cells -> {
 				startCells = cells;
@@ -115,8 +113,8 @@ public class MainController {
 			for (int i = 0; i < 8; i++) {
 				int nx = c.x() + dx[i];
 				int ny = c.y() + dy[i];
-				if (nx >= 0 && nx < CELLS_COUNT
-						&& ny >= 0 && ny < CELLS_COUNT
+				if (nx >= 0 && nx < GlobalSettings.getCellsCount()
+						&& ny >= 0 && ny < GlobalSettings.getCellsCount()
 						&& !map.containsKey(getIdForCell(nx, ny))) {
 					n = calculateNeighboursCount(nx, ny);
 					if (n == 3)
@@ -132,8 +130,8 @@ public class MainController {
 		for (int k = 0; k < 8; k++) {
 			int nx = i + dx[k];
 			int ny = j + dy[k];
-			if (nx >= 0 && nx < CELLS_COUNT
-					&& ny >= 0 && ny < CELLS_COUNT
+			if (nx >= 0 && nx < GlobalSettings.getCellsCount()
+					&& ny >= 0 && ny < GlobalSettings.getCellsCount()
 					&& map.containsKey(getIdForCell(nx, ny))) {
 				cnt++;
 			}
@@ -142,7 +140,7 @@ public class MainController {
 	}
 
 	private int getIdForCell(int i, int j) {
-		return i * CELLS_COUNT + j;
+		return i * GlobalSettings.getCellsCount() + j;
 	}
 
 	private void drawCells() {
