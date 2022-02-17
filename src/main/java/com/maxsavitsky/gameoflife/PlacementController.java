@@ -12,9 +12,21 @@ import java.util.ArrayList;
 
 public class PlacementController {
 
-	public static int cellsCount;
-	public static double cellsSize;
-	public static PlacementCallback sPlacementCallback;
+	private static int cellsCount;
+	private static double cellsSize;
+	private static PlacementCallback sPlacementCallback;
+
+	public static void setCellsCount(int cellsCount) {
+		PlacementController.cellsCount = cellsCount;
+	}
+
+	public static void setCellsSize(double cellsSize) {
+		PlacementController.cellsSize = cellsSize;
+	}
+
+	public static void setPlacementCallback(PlacementCallback sPlacementCallback) {
+		PlacementController.sPlacementCallback = sPlacementCallback;
+	}
 
 	@FXML
 	protected Canvas canvas;
@@ -22,40 +34,34 @@ public class PlacementController {
 	@FXML
 	protected Button okButton;
 
-	private ArrayList<MainController.LiveCell> cells = new ArrayList<>();
+	private final ArrayList<MainController.LiveCell> cells = new ArrayList<>();
 
 	@FXML
 	protected void initialize(){
-		okButton.setOnAction(new EventHandler<ActionEvent>() {
-			@Override
-			public void handle(ActionEvent event) {
-				sPlacementCallback.onPlacementReady(cells);
-				((Stage) canvas.getScene().getWindow()).close();
-			}
+		okButton.setOnAction(event -> {
+			sPlacementCallback.onPlacementReady(cells);
+			((Stage) canvas.getScene().getWindow()).close();
 		});
 
-		canvas.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
-			@Override
-			public void handle(MouseEvent event) {
-				int x = (int) event.getX();
-				int y = (int) event.getY();
-				int i = (int) (x / cellsSize);
-				int j = (int) (y / cellsSize);
-				int index = -1;
-				for (int k = 0; k < cells.size(); k++) {
-					MainController.LiveCell c = cells.get(k);
-					if (c.getX() == i && c.getY() == j) {
-						index = k;
-						break;
-					}
+		canvas.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
+			int x = (int) event.getX();
+			int y = (int) event.getY();
+			int i = (int) (x / cellsSize);
+			int j = (int) (y / cellsSize);
+			int index = -1;
+			for (int k = 0; k < cells.size(); k++) {
+				MainController.LiveCell c = cells.get(k);
+				if (c.getX() == i && c.getY() == j) {
+					index = k;
+					break;
 				}
-				if(index != -1){
-					clearCell(i, j);
-					cells.remove(index);
-				}else {
-					cells.add(new MainController.LiveCell(i, j));
-					drawCell(i, j);
-				}
+			}
+			if(index != -1){
+				clearCell(i, j);
+				cells.remove(index);
+			}else {
+				cells.add(new MainController.LiveCell(i, j));
+				drawCell(i, j);
 			}
 		});
 	}
@@ -66,11 +72,6 @@ public class PlacementController {
 
 	private void clearCell(int i, int j){
 		canvas.getGraphicsContext2D().clearRect(i * cellsSize, j * cellsSize, cellsSize, cellsSize);
-	}
-
-	@FXML
-	protected void onReady(){
-
 	}
 
 }

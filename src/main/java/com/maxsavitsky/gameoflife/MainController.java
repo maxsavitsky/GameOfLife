@@ -98,12 +98,12 @@ public class MainController {
 
 		placeButton.setOnMouseClicked(event -> {
 			stop();
-			PlacementController.cellsCount = cellsCount;
-			PlacementController.cellsSize = cellSize;
-			PlacementController.sPlacementCallback = cells -> {
+			PlacementController.setCellsCount(cellsCount);
+			PlacementController.setCellsSize(cellSize);
+			PlacementController.setPlacementCallback(cells -> {
 				startCells = cells;
 				reset();
-			};
+			});
 			FXMLLoader loader = new FXMLLoader(Application.class.getResource("placement-view.fxml"));
 			Stage stage = new Stage();
 			try {
