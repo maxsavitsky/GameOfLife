@@ -40,7 +40,7 @@ public class MainController {
 
 	private ArrayList<LiveCell> startCells = new ArrayList<>();
 
-	private double cellSize;
+	private int cellSize;
 
 	private ArrayList<LiveCell> liveCells = new ArrayList<>();
 	private final HashMap<Integer, LiveCell> map = new HashMap<>(GlobalSettings.getCellsCount() * (GlobalSettings.getCellsCount() + 1));
@@ -49,13 +49,12 @@ public class MainController {
 
 	@FXML
 	public void initialize() {
-		cellSize = canvas.getWidth() / GlobalSettings.getCellsCount();
+		cellSize = (int) Math.round(canvas.getWidth() / GlobalSettings.getCellsCount());
 		gc = canvas.getGraphicsContext2D();
 		gc.setLineWidth(GlobalSettings.getStrokeWidth());
 
 		placeButton.setOnMouseClicked(event -> {
 			stop();
-			PlacementController.setCellsSize(cellSize);
 			PlacementController.setPlacementCallback(cells -> {
 				startCells = cells;
 				reset();
@@ -151,15 +150,15 @@ public class MainController {
 	}
 
 	private void drawCell(int i, int j) {
-		double x = i * cellSize;
-		double y = j * cellSize;
+		int x = i * cellSize;
+		int y = j * cellSize;
 		gc.setFill(Color.BLACK);
 		gc.fillRect(x, y, cellSize, cellSize);
 	}
 
 	private void clearCell(int i, int j) {
-		double x = i * cellSize;
-		double y = j * cellSize;
+		int x = i * cellSize;
+		int y = j * cellSize;
 		gc.clearRect(x, y, cellSize, cellSize);
 	}
 

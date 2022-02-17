@@ -1,5 +1,6 @@
 package com.maxsavitsky.gameoflife.controller;
 
+import com.maxsavitsky.gameoflife.GlobalSettings;
 import javafx.fxml.FXML;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.control.Button;
@@ -10,16 +11,13 @@ import java.util.ArrayList;
 
 public class PlacementController {
 
-	private static double cellsSize;
 	private static Callback callback;
-
-	public static void setCellsSize(double cellsSize) {
-		PlacementController.cellsSize = cellsSize;
-	}
 
 	public static void setPlacementCallback(Callback sCallback) {
 		PlacementController.callback = sCallback;
 	}
+
+	private int cellSize;
 
 	@FXML
 	protected Canvas canvas;
@@ -31,6 +29,7 @@ public class PlacementController {
 
 	@FXML
 	protected void initialize(){
+		cellSize = (int) Math.round(canvas.getWidth() / GlobalSettings.getCellsCount());
 		okButton.setOnAction(event -> {
 			callback.onPlacementReady(cells);
 			((Stage) canvas.getScene().getWindow()).close();
@@ -39,8 +38,8 @@ public class PlacementController {
 		canvas.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
 			int x = (int) event.getX();
 			int y = (int) event.getY();
-			int i = (int) (x / cellsSize);
-			int j = (int) (y / cellsSize);
+			int i = x / cellSize;
+			int j = y / cellSize;
 			int index = -1;
 			for (int k = 0; k < cells.size(); k++) {
 				MainController.LiveCell c = cells.get(k);
@@ -60,11 +59,11 @@ public class PlacementController {
 	}
 
 	private void drawCell(int i, int j){
-		canvas.getGraphicsContext2D().fillRect(i * cellsSize, j * cellsSize, cellsSize, cellsSize);
+		canvas.getGraphicsContext2D().fillRect((i * cellSize), (j * cellSize), cellSize, cellSize);
 	}
 
 	private void clearCell(int i, int j){
-		canvas.getGraphicsContext2D().clearRect(i * cellsSize, j * cellsSize, cellsSize, cellsSize);
+		canvas.getGraphicsContext2D().clearRect((i * cellSize), (j * cellSize), cellSize, cellSize);
 	}
 
 	public interface Callback {

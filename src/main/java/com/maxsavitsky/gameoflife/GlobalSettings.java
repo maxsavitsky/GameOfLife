@@ -8,7 +8,7 @@ public class GlobalSettings {
 		return CELLS_COUNT;
 	}
 
-	private static final int STROKE_WIDTH = 10;
+	private static final int STROKE_WIDTH = 1;
 
 	public static int getStrokeWidth() {
 		return STROKE_WIDTH;
