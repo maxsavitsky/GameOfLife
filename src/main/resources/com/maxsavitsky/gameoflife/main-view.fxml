@@ -4,12 +4,11 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<Pane prefHeight="739.0" prefWidth="575.0" xmlns="http://javafx.com/javafx/11.0.2" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.maxsavitsky.gameoflife.controller.MainController">
-   <children>
-      <Canvas fx:id="canvas" height="655.0" width="575.0" />
-      <Button fx:id="startButton" layoutX="142.0" layoutY="674.0" mnemonicParsing="false" onAction="#start" text="Start" />
-      <Button layoutX="208.0" layoutY="674.0" mnemonicParsing="false" onAction="#stop" text="Stop" />
-      <Button layoutX="277.0" layoutY="674.0" mnemonicParsing="false" onAction="#reset" text="Reset" />
-      <Button fx:id="placeButton" layoutX="350.0" layoutY="674.0" mnemonicParsing="false" text="Place" />
-   </children>
+<Pane prefHeight="739.0" prefWidth="575.0" xmlns="http://javafx.com/javafx/11.0.2" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.maxsavitsky.gameoflife.controller.MainController">
+   <Canvas fx:id="canvas" height="655.0" width="575.0"/>
+   <Button layoutX="142.0" layoutY="674.0" mnemonicParsing="false" onAction="#start" text="Start"/>
+   <Button layoutX="208.0" layoutY="674.0" mnemonicParsing="false" onAction="#stop" text="Stop"/>
+   <Button layoutX="277.0" layoutY="674.0" mnemonicParsing="false" onAction="#reset" text="Reset"/>
+   <Button fx:id="placeButton" layoutX="350.0" layoutY="674.0" mnemonicParsing="false" text="Place"/>
 </Pane>
