@@ -1,7 +1,5 @@
-package com.maxsavitsky.gameoflife;
+package com.maxsavitsky.gameoflife.controller;
 
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.control.Button;
@@ -14,7 +12,7 @@ public class PlacementController {
 
 	private static int cellsCount;
 	private static double cellsSize;
-	private static PlacementCallback sPlacementCallback;
+	private static Callback callback;
 
 	public static void setCellsCount(int cellsCount) {
 		PlacementController.cellsCount = cellsCount;
@@ -24,8 +22,8 @@ public class PlacementController {
 		PlacementController.cellsSize = cellsSize;
 	}
 
-	public static void setPlacementCallback(PlacementCallback sPlacementCallback) {
-		PlacementController.sPlacementCallback = sPlacementCallback;
+	public static void setPlacementCallback(Callback sCallback) {
+		PlacementController.callback = sCallback;
 	}
 
 	@FXML
@@ -39,7 +37,7 @@ public class PlacementController {
 	@FXML
 	protected void initialize(){
 		okButton.setOnAction(event -> {
-			sPlacementCallback.onPlacementReady(cells);
+			callback.onPlacementReady(cells);
 			((Stage) canvas.getScene().getWindow()).close();
 		});
 
@@ -74,4 +72,9 @@ public class PlacementController {
 		canvas.getGraphicsContext2D().clearRect(i * cellsSize, j * cellsSize, cellsSize, cellsSize);
 	}
 
+	public interface Callback {
+
+		void onPlacementReady(ArrayList<MainController.LiveCell> cells);
+
+	}
 }

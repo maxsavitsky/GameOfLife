@@ -5,4 +5,6 @@ module com.maxsavitsky.gameoflife {
 
 	opens com.maxsavitsky.gameoflife to javafx.fxml;
 	exports com.maxsavitsky.gameoflife;
+	exports com.maxsavitsky.gameoflife.controller;
+	opens com.maxsavitsky.gameoflife.controller to javafx.fxml;
 }

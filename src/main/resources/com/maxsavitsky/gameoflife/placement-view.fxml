@@ -4,9 +4,9 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<Pane prefHeight="739.0" prefWidth="575.0" xmlns="http://javafx.com/javafx/11.0.2" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.maxsavitsky.gameoflife.PlacementController">
+<Pane prefHeight="739.0" prefWidth="575.0" xmlns="http://javafx.com/javafx/11.0.2" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.maxsavitsky.gameoflife.controller.PlacementController">
     <children>
         <Canvas fx:id="canvas" height="655.0" width="575.0" />
-      <Button layoutX="262.0" layoutY="677.0" mnemonicParsing="false" onAction="#onReady" text="OK" fx:id="okButton" />
+      <Button layoutX="262.0" layoutY="677.0" mnemonicParsing="false" text="OK" fx:id="okButton" />
     </children>
 </Pane>

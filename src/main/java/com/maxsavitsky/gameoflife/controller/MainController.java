@@ -1,5 +1,6 @@
-package com.maxsavitsky.gameoflife;
+package com.maxsavitsky.gameoflife.controller;
 
+import com.maxsavitsky.gameoflife.Application;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
