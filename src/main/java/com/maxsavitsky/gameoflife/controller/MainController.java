@@ -191,4 +191,11 @@ public class MainController {
 		init();
 	}
 
+	@FXML
+	protected void clear(){
+		stop();
+		startCells = new ArrayList<>();
+		init();
+	}
+
 }

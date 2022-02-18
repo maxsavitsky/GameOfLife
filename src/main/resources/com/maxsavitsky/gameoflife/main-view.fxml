@@ -10,5 +10,6 @@
    <Button layoutX="192.0" layoutY="840" mnemonicParsing="false" onAction="#start" text="Start"/>
    <Button layoutX="258.0" layoutY="840" mnemonicParsing="false" onAction="#stop" text="Stop"/>
    <Button layoutX="327.0" layoutY="840" mnemonicParsing="false" onAction="#reset" text="Reset"/>
-   <Button fx:id="placeButton" layoutX="450.0" layoutY="840" mnemonicParsing="false" text="Edit"/>
+   <Button layoutX="397.0" layoutY="840" mnemonicParsing="false" onAction="#clear" text="Clear"/>
+   <Button fx:id="placeButton" layoutX="470.0" layoutY="840" mnemonicParsing="false" text="Edit"/>
 </Pane>
