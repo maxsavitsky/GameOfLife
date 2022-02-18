@@ -11,22 +11,6 @@ repositories {
     mavenCentral()
 }
 
-java{
-    toolchain {
-        languageVersion = JavaLanguageVersion.of(17)
-    }
-}
-
-jar {
-    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
-
-    manifest {
-        attributes 'Main-Class': "com.maxsavitsky.gameoflife.Application"
-    }
-
-    from { configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) } }
-}
-
 ext {
     junitVersion = '5.8.2'
 }
@@ -41,7 +25,7 @@ application {
 }
 
 javafx {
-    version = '17.0.2'
+    version = '17'
     modules = ['javafx.controls', 'javafx.fxml']
 }
 
