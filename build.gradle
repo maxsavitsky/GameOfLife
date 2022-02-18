@@ -11,6 +11,12 @@ repositories {
     mavenCentral()
 }
 
+java{
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(17)
+    }
+}
+
 ext {
     junitVersion = '5.8.2'
 }
@@ -21,7 +27,7 @@ tasks.withType(JavaCompile) {
 
 application {
     mainModule = 'com.maxsavitsky.gameoflife'
-    mainClass = 'com.maxsavitsky.gameoflife.Application'
+    mainClass = 'com.maxsavitsky.gameoflife.GameOfLifeApplication'
 }
 
 javafx {
