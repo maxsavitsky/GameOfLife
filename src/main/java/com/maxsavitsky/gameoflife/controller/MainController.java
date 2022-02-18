@@ -59,6 +59,7 @@ public class MainController {
 				startCells = cells;
 				reset();
 			});
+			PlacementController.setStartCells(liveCells);
 			FXMLLoader loader = new FXMLLoader(GameOfLifeApplication.class.getResource("placement-view.fxml"));
 			Stage stage = new Stage();
 			try {
