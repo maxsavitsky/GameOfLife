@@ -55,18 +55,18 @@ public class MainController {
 
 		placeButton.setOnMouseClicked(event -> {
 			stop();
-			PlacementController.setPlacementCallback(cells -> {
+			EditorController.setCallback(cells -> {
 				startCells = cells;
 				reset();
 			});
-			PlacementController.setStartCells(liveCells);
+			EditorController.setStartCells(liveCells);
 			FXMLLoader loader = new FXMLLoader(GameOfLifeApplication.class.getResource("placement-view.fxml"));
 			Stage stage = new Stage();
 			try {
 				Scene scene = new Scene(loader.load());
 				stage.setScene(scene);
 				stage.setResizable(false);
-				stage.setTitle("Place cells");
+				stage.setTitle("Editor");
 				stage.show();
 			} catch (IOException e) {
 				e.printStackTrace();

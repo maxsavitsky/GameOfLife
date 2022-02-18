@@ -12,18 +12,18 @@ import javafx.stage.Stage;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PlacementController {
+public class EditorController {
 
 	private static Callback callback;
 
-	public static void setPlacementCallback(Callback sCallback) {
-		PlacementController.callback = sCallback;
+	public static void setCallback(Callback sCallback) {
+		EditorController.callback = sCallback;
 	}
 
 	private static ArrayList<MainController.LiveCell> startCells;
 
 	public static void setStartCells(List<MainController.LiveCell> startCells) {
-		PlacementController.startCells = new ArrayList<>(startCells);
+		EditorController.startCells = new ArrayList<>(startCells);
 	}
 
 	private int cellSize;

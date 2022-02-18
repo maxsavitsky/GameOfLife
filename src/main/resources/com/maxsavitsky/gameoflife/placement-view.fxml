@@ -5,7 +5,7 @@
 <?import javafx.scene.layout.*?>
 
 <Pane prefHeight="900" prefWidth="700" xmlns="http://javafx.com/javafx/11.0.2" xmlns:fx="http://javafx.com/fxml/1"
-      fx:controller="com.maxsavitsky.gameoflife.controller.PlacementController">
+      fx:controller="com.maxsavitsky.gameoflife.controller.EditorController">
     <Canvas fx:id="canvas" height="800" width="700"/>
-    <Button layoutX="262.0" layoutY="840" mnemonicParsing="false" text="OK" fx:id="okButton"/>
+    <Button layoutX="300.0" layoutY="840" mnemonicParsing="false" text="Apply" fx:id="okButton"/>
 </Pane>
