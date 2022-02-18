@@ -45,10 +45,13 @@ public class MainController {
 
 	private ArrayList<LiveCell> startCells = new ArrayList<>();
 
-	private int cellSize;
+	private static final int CELL_SIZE = GlobalSettings.getCellSize();
+
+	private int rowCount;
+	private int colCount;
 
 	private ArrayList<LiveCell> liveCells = new ArrayList<>();
-	private final HashMap<Integer, LiveCell> map = new HashMap<>(GlobalSettings.getCellsCount() * (GlobalSettings.getCellsCount() + 1));
+	private HashMap<Integer, LiveCell> map;
 
 	private Timer timer;
 
@@ -56,7 +59,11 @@ public class MainController {
 
 	@FXML
 	public void initialize() {
-		cellSize = (int) Math.round(canvas.getWidth() / GlobalSettings.getCellsCount());
+		rowCount = (int)(canvas.getHeight() / CELL_SIZE);
+		colCount = (int)(canvas.getWidth() / CELL_SIZE);
+
+		map = new HashMap<>((rowCount + 1) * (colCount + 1));
+
 		gc = canvas.getGraphicsContext2D();
 		gc.setLineWidth(GlobalSettings.getStrokeWidth());
 
@@ -140,8 +147,8 @@ public class MainController {
 			for (int i = 0; i < 8; i++) {
 				int nx = c.x() + dx[i];
 				int ny = c.y() + dy[i];
-				if (nx >= 0 && nx < GlobalSettings.getCellsCount()
-						&& ny >= 0 && ny < GlobalSettings.getCellsCount()
+				if (nx >= 0 && nx < colCount
+						&& ny >= 0 && ny < rowCount
 						&& !map.containsKey(getIdForCell(nx, ny))) {
 					n = calculateNeighboursCount(nx, ny);
 					if (n == 3)
@@ -157,8 +164,8 @@ public class MainController {
 		for (int k = 0; k < 8; k++) {
 			int nx = i + dx[k];
 			int ny = j + dy[k];
-			if (nx >= 0 && nx < GlobalSettings.getCellsCount()
-					&& ny >= 0 && ny < GlobalSettings.getCellsCount()
+			if (nx >= 0 && nx < colCount
+					&& ny >= 0 && ny < rowCount
 					&& map.containsKey(getIdForCell(nx, ny))) {
 				cnt++;
 			}
@@ -167,7 +174,7 @@ public class MainController {
 	}
 
 	private int getIdForCell(int i, int j) {
-		return i * GlobalSettings.getCellsCount() + j;
+		return i * colCount + j;
 	}
 
 	private void drawCells() {
@@ -178,17 +185,17 @@ public class MainController {
 	}
 
 	private void drawCell(int i, int j) {
-		int x = i * cellSize;
-		int y = j * cellSize;
+		int x = i * CELL_SIZE;
+		int y = j * CELL_SIZE;
 		gc.setFill(Color.BLACK);
-		gc.fillRect(x, y, cellSize, cellSize);
+		gc.fillRect(x, y, CELL_SIZE, CELL_SIZE);
 	}
 
 	private void clearCell(int i, int j) {
-		int x = i * cellSize;
-		int y = j * cellSize;
+		int x = i * CELL_SIZE;
+		int y = j * CELL_SIZE;
 		gc.setFill(Color.WHITE);
-		gc.fillRect(x, y, cellSize, cellSize);
+		gc.fillRect(x, y, CELL_SIZE, CELL_SIZE);
 	}
 
 	@FXML

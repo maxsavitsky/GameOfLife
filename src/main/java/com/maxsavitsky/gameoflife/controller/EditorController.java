@@ -26,7 +26,7 @@ public class EditorController {
 		EditorController.startCells = new ArrayList<>(startCells);
 	}
 
-	private int cellSize;
+	private static final int CELL_SIZE = GlobalSettings.getCellSize();
 
 	private GraphicsContext gc;
 
@@ -40,7 +40,6 @@ public class EditorController {
 
 	@FXML
 	protected void initialize(){
-		cellSize = (int) Math.round(canvas.getWidth() / GlobalSettings.getCellsCount());
 		okButton.setOnAction(event -> {
 			callback.onPlacementReady(cells);
 			((Stage) canvas.getScene().getWindow()).close();
@@ -56,8 +55,8 @@ public class EditorController {
 		canvas.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
 			int x = (int) event.getX();
 			int y = (int) event.getY();
-			int i = x / cellSize;
-			int j = y / cellSize;
+			int i = x / CELL_SIZE;
+			int j = y / CELL_SIZE;
 			int index = -1;
 			for (int k = 0; k < cells.size(); k++) {
 				MainController.LiveCell c = cells.get(k);
@@ -77,17 +76,17 @@ public class EditorController {
 	}
 
 	private void drawCell(int i, int j) {
-		int x = i * cellSize;
-		int y = j * cellSize;
+		int x = i * CELL_SIZE;
+		int y = j * CELL_SIZE;
 		gc.setFill(Color.BLACK);
-		gc.fillRect(x, y, cellSize, cellSize);
+		gc.fillRect(x, y, CELL_SIZE, CELL_SIZE);
 	}
 
 	private void clearCell(int i, int j) {
-		int x = i * cellSize;
-		int y = j * cellSize;
+		int x = i * CELL_SIZE;
+		int y = j * CELL_SIZE;
 		gc.setFill(Color.WHITE);
-		gc.fillRect(x, y, cellSize, cellSize);
+		gc.fillRect(x, y, CELL_SIZE, CELL_SIZE);
 	}
 
 	public interface Callback {
