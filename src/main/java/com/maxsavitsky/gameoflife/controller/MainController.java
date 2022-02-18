@@ -159,7 +159,8 @@ public class MainController {
 	private void clearCell(int i, int j) {
 		int x = i * cellSize;
 		int y = j * cellSize;
-		gc.clearRect(x, y, cellSize, cellSize);
+		gc.setFill(Color.WHITE);
+		gc.fillRect(x, y, cellSize, cellSize);
 	}
 
 	@FXML
