@@ -6,13 +6,13 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 
-public class Application extends javafx.application.Application {
+public class GameOfLifeApplication extends javafx.application.Application {
 	@Override
 	public void start(Stage stage) throws IOException {
-		FXMLLoader fxmlLoader = new FXMLLoader(Application.class.getResource("main-view.fxml"));
+		FXMLLoader fxmlLoader = new FXMLLoader(GameOfLifeApplication.class.getResource("main-view.fxml"));
 		Scene scene = new Scene(fxmlLoader.load());
 		stage.setResizable(false);
-		stage.setTitle("Hello!");
+		stage.setTitle("Game of Life by Max Savitsky");
 		stage.setScene(scene);
 		stage.show();
 	}

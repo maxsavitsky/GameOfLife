@@ -1,6 +1,6 @@
 package com.maxsavitsky.gameoflife.controller;
 
-import com.maxsavitsky.gameoflife.Application;
+import com.maxsavitsky.gameoflife.GameOfLifeApplication;
 import com.maxsavitsky.gameoflife.GlobalSettings;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -59,7 +59,7 @@ public class MainController {
 				startCells = cells;
 				reset();
 			});
-			FXMLLoader loader = new FXMLLoader(Application.class.getResource("placement-view.fxml"));
+			FXMLLoader loader = new FXMLLoader(GameOfLifeApplication.class.getResource("placement-view.fxml"));
 			Stage stage = new Stage();
 			try {
 				Scene scene = new Scene(loader.load());
