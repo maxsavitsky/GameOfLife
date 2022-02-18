@@ -17,6 +17,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Locale;
+import java.util.ResourceBundle;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -67,6 +69,11 @@ public class MainController {
 		gc = canvas.getGraphicsContext2D();
 		gc.setLineWidth(GlobalSettings.getStrokeWidth());
 
+		Platform.runLater(()->{
+			gc.setFill(Color.BLACK);
+			gc.strokeLine(0, canvas.getHeight(), canvas.getWidth(), canvas.getHeight());
+		});
+
 		placeButton.setOnMouseClicked(event -> {
 			stop();
 			EditorController.setCallback(cells -> {
@@ -75,6 +82,7 @@ public class MainController {
 			});
 			EditorController.setStartCells(liveCells);
 			FXMLLoader loader = new FXMLLoader(GameOfLifeApplication.class.getResource("placement-view.fxml"));
+			loader.setResources(ResourceBundle.getBundle("com.maxsavitsky.gameoflife.constants", Locale.getDefault()));
 			Stage stage = new Stage();
 			try {
 				Scene scene = new Scene(loader.load());
