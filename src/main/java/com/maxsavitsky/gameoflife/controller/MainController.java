@@ -65,6 +65,7 @@ public class MainController {
 				Scene scene = new Scene(loader.load());
 				stage.setScene(scene);
 				stage.setResizable(false);
+				stage.setTitle("Place cells");
 				stage.show();
 			} catch (IOException e) {
 				e.printStackTrace();
