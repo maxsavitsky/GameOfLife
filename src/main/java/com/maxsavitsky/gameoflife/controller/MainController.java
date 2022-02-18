@@ -2,12 +2,14 @@ package com.maxsavitsky.gameoflife.controller;
 
 import com.maxsavitsky.gameoflife.GameOfLifeApplication;
 import com.maxsavitsky.gameoflife.GlobalSettings;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
@@ -38,6 +40,9 @@ public class MainController {
 	@FXML
 	private Button placeButton;
 
+	@FXML
+	private Label statusLabel;
+
 	private ArrayList<LiveCell> startCells = new ArrayList<>();
 
 	private int cellSize;
@@ -46,6 +51,8 @@ public class MainController {
 	private final HashMap<Integer, LiveCell> map = new HashMap<>(GlobalSettings.getCellsCount() * (GlobalSettings.getCellsCount() + 1));
 
 	private Timer timer;
+
+	private int generation = 1;
 
 	@FXML
 	public void initialize() {
@@ -84,13 +91,25 @@ public class MainController {
 		}
 
 		drawCells();
+
+		generation = 1;
+
+		statusLabel.setText(
+				"Generation: %d%nCount: %d"
+						.formatted(generation, liveCells.size())
+		);
 	}
 
 	private final int[] dx = {1, 0, -1, 0, 1, -1, 1, -1};
 	private final int[] dy = {0, 1, 0, -1, 1, 1, -1, -1};
 
 	private void fetch() {
-		for (var a : getPendingActions()) {
+		HashSet<Action> pending = getPendingActions();
+		if(pending.isEmpty()){
+			stop();
+			return;
+		}
+		for (var a : pending) {
 			var c = a.cell;
 			if (a.action() == ActionType.REMOVE_CELL) {
 				liveCells.remove(c);
@@ -102,6 +121,13 @@ public class MainController {
 				drawCell(c.x(), c.y());
 			}
 		}
+
+		generation++;
+
+		Platform.runLater(()->statusLabel.setText(
+				"Generation: %d%nCount: %d"
+						.formatted(generation, liveCells.size())
+		));
 	}
 
 	private HashSet<Action> getPendingActions(){
