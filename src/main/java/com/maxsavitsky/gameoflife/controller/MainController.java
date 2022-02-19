@@ -8,12 +8,21 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.paint.Color;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -21,10 +30,14 @@ import java.util.Locale;
 import java.util.ResourceBundle;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.regex.Pattern;
 
 public class MainController {
 
 	public record LiveCell(int x, int y) {
+		public String convertToString(){
+			return x + ":" + y;
+		}
 	}
 
 	public enum ActionType {
@@ -33,6 +46,12 @@ public class MainController {
 	}
 
 	private record Action(ActionType action, LiveCell cell) {
+	}
+
+	private Stage stage;
+
+	public void setStage(Stage stage) {
+		this.stage = stage;
 	}
 
 	@FXML
@@ -83,13 +102,13 @@ public class MainController {
 			EditorController.setStartCells(liveCells);
 			FXMLLoader loader = new FXMLLoader(GameOfLifeApplication.class.getResource("placement-view.fxml"));
 			loader.setResources(ResourceBundle.getBundle("com.maxsavitsky.gameoflife.constants", Locale.getDefault()));
-			Stage stage = new Stage();
+			Stage placementStage = new Stage();
 			try {
 				Scene scene = new Scene(loader.load());
-				stage.setScene(scene);
-				stage.setResizable(false);
-				stage.setTitle("Editor");
-				stage.show();
+				placementStage.setScene(scene);
+				placementStage.setResizable(false);
+				placementStage.setTitle("Editor");
+				placementStage.show();
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
@@ -237,6 +256,114 @@ public class MainController {
 		stop();
 		startCells = new ArrayList<>();
 		init();
+	}
+
+	@FXML
+	protected void importConf(){
+		stop();
+		FileChooser fileChooser = new FileChooser();
+		fileChooser
+				.getExtensionFilters()
+				.add(new FileChooser.ExtensionFilter("TXT files (*.txt)", "*.txt"));
+		File file = fileChooser.showOpenDialog(stage);
+		if(file != null){
+			importFromFile(file);
+		}
+	}
+
+	private void importFromFile(File file){
+		HashSet<LiveCell> cells = new HashSet<>();
+		try (BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(file)))) {
+			String l = reader.readLine();
+			if(l == null || !isInteger(l)){
+				displayError("Parse error: Expected cells count on line 1", null);
+				return;
+			}
+			int n = Integer.parseInt(l);
+			for(int i = 0; i < n; i++){
+				l = reader.readLine();
+				final String expectedCoordinateParseError = "Parse error: Expected cell coordinate on line " + (i + 2);
+				if(l == null){
+					displayError(expectedCoordinateParseError, null);
+					return;
+				}
+				LiveCell cell = parseCell(l);
+				if(cell == null){
+					displayError(expectedCoordinateParseError, null);
+					return;
+				}
+				cells.add(cell);
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+			displayError("Parse error: Failed to open file", e.getMessage());
+			return;
+		}
+
+		startCells = new ArrayList<>(cells);
+		init();
+	}
+
+	private boolean isInteger(String s){
+		Pattern pattern = Pattern.compile("^[0-9]+$");
+		return pattern.matcher(s).matches();
+	}
+
+	private LiveCell parseCell(String s){
+		String[] parts = s.split(":");
+		if(parts.length != 2){
+			return null;
+		}
+		int x;
+		int y;
+		try{
+			x = Integer.parseInt(parts[0]);
+			y = Integer.parseInt(parts[1]);
+		}catch (NumberFormatException e){
+			return null;
+		}
+		return new LiveCell(x, y);
+	}
+
+	@FXML
+	private void exportConf(){
+		stop();
+		FileChooser fileChooser = new FileChooser();
+		fileChooser
+				.getExtensionFilters()
+				.add(new FileChooser.ExtensionFilter("TXT files (*.txt)", "*.txt"));
+		File file = fileChooser.showSaveDialog(stage);
+		if(file != null)
+			exportToFile(file);
+	}
+
+	private void exportToFile(File file){
+		try(BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file)))){
+			writer.write(String.valueOf(liveCells.size()));
+			writer.newLine();
+			for(var c : liveCells){
+				writer.write(c.convertToString());
+				writer.newLine();
+			}
+		}catch (IOException e){
+			e.printStackTrace();
+			displayError("Error: Failed to open file", e.getMessage());
+			return;
+		}
+
+		Alert alert = new Alert(Alert.AlertType.INFORMATION);
+		alert.setHeaderText("Successfully");
+		alert.show();
+	}
+
+	private void displayError(String message, String subtext){
+		Alert alert = new Alert(Alert.AlertType.ERROR);
+
+		alert.setHeaderText(message);
+		if(subtext != null)
+			alert.setContentText(subtext);
+
+		alert.show();
 	}
 
 }
