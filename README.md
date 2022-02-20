@@ -11,6 +11,8 @@ $ cd GameOfLife
 $ ./gradlew run
 ```
 
-### Example
+### Examples
+In program you can import some start configurations from examples folder
+
 https://user-images.githubusercontent.com/38137967/154695717-b7e6cadf-a6e4-46ec-b91f-700d96b18da6.mp4
 
