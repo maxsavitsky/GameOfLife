@@ -101,7 +101,7 @@ public class MainController {
 			});
 			EditorController.setStartCells(liveCells);
 			FXMLLoader loader = new FXMLLoader(GameOfLifeApplication.class.getResource("placement-view.fxml"));
-			loader.setResources(ResourceBundle.getBundle("com.maxsavitsky.gameoflife.constants", Locale.getDefault()));
+			loader.setResources(GlobalSettings.getPropsResourceBundle());
 			Stage placementStage = new Stage();
 			try {
 				Scene scene = new Scene(loader.load());

@@ -9,6 +9,9 @@ version '1.0'
 
 repositories {
     mavenCentral()
+    maven {
+        url 'https://repo.maxsavteam.com'
+    }
 }
 
 java{
@@ -36,6 +39,8 @@ javafx {
 }
 
 dependencies {
+    implementation 'com.maxsavteam.props:project-props:1.0.3-alpha3'
+
     testImplementation("org.junit.jupiter:junit-jupiter-api:${junitVersion}")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:${junitVersion}")
 }
